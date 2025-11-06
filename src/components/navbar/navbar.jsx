@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import logo2030FIFa from 'assets/images/2030FIFa.png';
-import { Search, Share2, Menu, Globe } from 'lucide-react';
+import { Globe } from 'lucide-react';
 
 
 
