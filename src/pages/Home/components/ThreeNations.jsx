@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import NationCard from './NationCard';
+import Dialog from 'components/Dialog/Dialog';
+import CountryInfoDialog from 'components/CountryInfoDialog/CountryInfoDialog';
 import moroccoImg from 'assets/images/maroc.png';
 import portugalImg from 'assets/images/portogal.png';
 import spainImg from 'assets/images/spaine.png';
+import { getCountryInfo } from '../services/countryService';
 
 function ThreeNations() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [countryData, setCountryData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const nations = [
     {
       name: 'Morocco',
@@ -29,6 +37,29 @@ function ThreeNations() {
     }
   ];
 
+  const handleFetchCountryInfo = async (countryName) => {
+    try {
+      setIsLoading(true);
+      setSelectedCountry(countryName);
+      setIsDialogOpen(true);
+      setCountryData(null);
+      
+      const data = await getCountryInfo(countryName);
+      setCountryData(data);
+      console.log('Country Data:', data);
+    } catch (error) {
+      console.error('Error fetching country data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+    setCountryData(null);
+    setSelectedCountry(null);
+  };
+
   return (
     <section className="bg-gray-50 py-20 px-8">
       <div className="max-w-7xl mx-auto">
@@ -45,10 +76,22 @@ function ThreeNations() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {nations.map((nation, index) => (
-            <NationCard key={index} {...nation} />
+            <NationCard 
+              key={index} 
+              {...nation}
+              onExploreClick={() => handleFetchCountryInfo(nation.name)}
+            />
           ))}
         </div>
       </div>
+
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={handleCloseDialog}
+        title={selectedCountry ? `${selectedCountry} Information` : 'Country Information'}
+      >
+        <CountryInfoDialog countryData={countryData} />
+      </Dialog>
     </section>
   );
 }

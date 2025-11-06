@@ -1,6 +1,13 @@
 import React from 'react';
 
-function NationCard({ name, color, description, image, link }) {
+function NationCard({ name, color, description, image, link, onExploreClick }) {
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (onExploreClick) {
+      onExploreClick();
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
       <div className="h-64 overflow-hidden">
@@ -26,7 +33,8 @@ function NationCard({ name, color, description, image, link }) {
         
         <a 
           href={link}
-          className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors"
+          onClick={handleClick}
+          className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition-colors cursor-pointer"
         >
           Explore venues
           <svg 
